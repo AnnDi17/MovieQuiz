@@ -121,6 +121,8 @@ final class MovieQuizViewController: UIViewController {
             self.correctAnswers = 0
             let startView = self.convert(model: self.questions[0])
             self.show(quiz: startView)
+            self.yesButton.isEnabled = true
+            self.noButton.isEnabled = true
         }
         alert.addAction(action)
         self.present(alert, animated: true, completion: nil)
@@ -151,15 +153,21 @@ final class MovieQuizViewController: UIViewController {
             let nextQuestion = questions[currentQuestionIndex]
             let nextView = convert(model: nextQuestion)
             show(quiz: nextView)
+            yesButton.isEnabled = true
+            noButton.isEnabled = true
         }
     }
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
+        sender.isEnabled = false
+        noButton.isEnabled = false
         /* button YES =>
          if YES is the correct answer, isCorrect = true
          if NO is the correct answer, isCorrect = false => isCorrect = questions[...].correctAnswer)*/
         showAnswerResult(isCorrect: questions[currentQuestionIndex].correctAnswer)
     }
     @IBAction private func noButtonClicked(_ sender: UIButton) {
+        sender.isEnabled = false
+        yesButton.isEnabled = false
         /* button YES =>
          if YES is the correct answer, isCorrect = false
          if NO is the correct answer, isCorrect = true => isCorrect = !questions[...].correctAnswer)*/
