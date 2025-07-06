@@ -5,6 +5,6 @@
 
 import Foundation
 
-protocol AlertProtocol{
+protocol AlertProtocol: AnyObject{
     func showAlert(_:AlertModel)
 }

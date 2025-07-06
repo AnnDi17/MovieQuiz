@@ -5,7 +5,7 @@
 
 import Foundation
 
-protocol StatisticServiceProtocol {
+protocol StatisticServiceProtocol: AnyObject {
     var gamesCount: Int { get }
     var bestGame: GameResult { get }
     var totalAccuracy: Double { get }
