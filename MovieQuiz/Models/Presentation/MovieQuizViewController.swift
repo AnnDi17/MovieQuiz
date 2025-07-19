@@ -7,6 +7,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     @IBOutlet weak private var imageView: UIImageView!
     @IBOutlet weak private var textLabel: UILabel!
     @IBOutlet weak private var counterLabel: UILabel!
+    @IBOutlet weak private var activityIndicator: UIActivityIndicatorView!
     private var questionFactory: QuestionFactoryProtocol?
     private var statisticService: StatisticServiceProtocol?
     private var alertPresenter: AlertProtocol?
@@ -18,9 +19,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        questionFactory = QuestionFactory(delegate: self)
-        alertPresenter = ResultAlertPresenter(delegate: self)
-        statisticService = StatisticServiceImplementation()
         imageView.layer.masksToBounds = true
         imageView.layer.cornerRadius = 20
         questionLabel.font = Fonts.ysDisplayMedium20
@@ -33,7 +31,11 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         yesButton.titleLabel?.textColor = .ypBlack
         noButton.titleLabel?.font = Fonts.ysDisplayMedium20
         noButton.titleLabel?.textColor = .ypBlack
-        questionFactory?.requestNextQuestion()
+        questionFactory = QuestionFactory(delegate: self)
+        alertPresenter = ResultAlertPresenter(delegate: self)
+        statisticService = StatisticServiceImplementation()
+        showLoadingIndicator()
+        questionFactory?.loadData()
     }
     // MARK: - QuestionFactoryDelegate
     func didReceiveNextQuestion(question: QuizQuestion?) {
@@ -49,17 +51,27 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         }
         
     }
+    func didLoadDataFromServer() {
+        activityIndicator.isHidden = true // скрываем индикатор загрузки
+        questionFactory?.requestNextQuestion()
+    }
+    
+    func didFailToLoadData(with error: Error) {
+        showNetworkError(message: error.localizedDescription)
+    }
     // MARK: - AlertPresenterDelegate
     func didTapOk() {
         // returning to the start of the game
         self.currentQuestionIndex = 0
         self.correctAnswers = 0
-        self.questionFactory?.requestNextQuestion()
+        showLoadingIndicator()
+        questionFactory?.loadData()
+        //self.questionFactory?.requestNextQuestion()
     }
     // MARK: - Private functions
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
         let viewModel = QuizStepViewModel(
-            image: UIImage(named: model.image) ?? UIImage(),
+            image: UIImage(data:  model.image) ?? UIImage(),
             question: model.text,
             questionNumber: "\(currentQuestionIndex+1)/\(questionsAmount)"
         )
@@ -77,9 +89,11 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         let alertModel = AlertModel(
             title: result.title,
             message: result.text,
-            buttonText: result.buttonText,
-            completion: nil
-        )
+            buttonText: result.buttonText
+        ){[weak self] in
+            guard let self = self else {return}
+            self.didTapOk()
+        }
         alertPresenter?.showAlert(alertModel)
     }
     // change color of the border according to the answer: Green - correct, Red - wrong
@@ -114,6 +128,24 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
             currentQuestionIndex += 1
             questionFactory?.requestNextQuestion()
         }
+    }
+    private func showLoadingIndicator() {
+        activityIndicator.isHidden = false
+        activityIndicator.startAnimating()
+    }
+    private func hideLoadingIndicator() {
+        activityIndicator.isHidden = true
+    }
+    private func showNetworkError(message: String) {
+        hideLoadingIndicator()
+        let errorMessage = AlertModel(
+            title: "Ошибка",
+            message: message,
+            buttonText: "Попробовать ещё раз"
+        ){[weak self] in
+            guard let self = self else {return}
+            self.didTapOk()}
+        alertPresenter?.showAlert(errorMessage)
     }
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
         sender.isEnabled = false
