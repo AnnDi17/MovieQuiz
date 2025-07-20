@@ -52,7 +52,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         
     }
     func didLoadDataFromServer() {
-        activityIndicator.isHidden = true // скрываем индикатор загрузки
+        activityIndicator.isHidden = true
         questionFactory?.requestNextQuestion()
     }
     
@@ -91,7 +91,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
             message: result.text,
             buttonText: result.buttonText
         ){[weak self] in
-            guard let self = self else {return}
+            guard let self else {return}
             self.didTapOk()
         }
         alertPresenter?.showAlert(alertModel)
@@ -143,7 +143,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
             message: message,
             buttonText: "Попробовать ещё раз"
         ){[weak self] in
-            guard let self = self else {return}
+            guard let self else {return}
             self.didTapOk()}
         alertPresenter?.showAlert(errorMessage)
     }
@@ -164,7 +164,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         /* button YES =>
          if YES is the correct answer, isCorrect = false
          if NO is the correct answer, isCorrect = true => isCorrect = !questions[...].correctAnswer)*/
-        guard let currentQuestion = currentQuestion else {
+        guard let currentQuestion else {
             return
         }
         showAnswerResult(isCorrect: !currentQuestion.correctAnswer)
