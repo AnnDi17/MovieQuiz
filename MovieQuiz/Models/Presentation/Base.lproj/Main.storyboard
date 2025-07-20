@@ -99,17 +99,23 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="L3V-30-5c1">
+                                <rect key="frame" x="210" y="468" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" name="YP Black"/>
                         <constraints>
+                            <constraint firstItem="L3V-30-5c1" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="Dfs-YL-qjT"/>
                             <constraint firstItem="RdT-UB-x7M" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="OU5-BF-eNV"/>
+                            <constraint firstItem="L3V-30-5c1" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="XCb-Om-mWZ"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="top" secondItem="RdT-UB-x7M" secondAttribute="top" constant="10" id="fkL-rW-ZdQ"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="RdT-UB-x7M" secondAttribute="trailing" constant="20" id="ps2-YJ-V2p"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="RdT-UB-x7M" secondAttribute="bottom" id="vtF-P5-ya3"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="L3V-30-5c1" id="qqs-mV-szV"/>
                         <outlet property="counterLabel" destination="8Uo-ie-wrh" id="VZy-Hg-sQd"/>
                         <outlet property="imageView" destination="WMk-QZ-Ypw" id="c3N-Ha-wI2"/>
                         <outlet property="noButton" destination="GFP-As-RED" id="lgK-HU-klv"/>

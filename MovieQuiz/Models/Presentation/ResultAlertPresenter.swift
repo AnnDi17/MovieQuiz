@@ -10,17 +10,15 @@ final class ResultAlertPresenter: AlertProtocol{
     init(delegate: AlertPresenterDelegate?) {
         self.delegate = delegate
     }
-    func showAlert(_ result: AlertModel) {
+    func showAlert(_ model: AlertModel) {
         let alert = UIAlertController(
-            title: result.title,
-            message: result.message,
+            title: model.title,
+            message: model.message,
             preferredStyle: .alert)
-        let action = UIAlertAction(title: result.buttonText, style: .default) { [weak delegate] _ in
-            guard let delegate else {return}
-            // returning to the start of the game
-            delegate.didTapOk()
+        let action = UIAlertAction(title: model.buttonText, style: .default) {_ in
+            model.completion?()
         }
         alert.addAction(action)
-        delegate?.present(alert, animated: true, completion: result.completion)
+        delegate?.present(alert, animated: true, completion: nil)
     }
 }
